@@ -4,8 +4,10 @@ const files = fs.readdirSync('resources')
 const resources = []
 
 files.forEach(file => {
-  const { data } = require(`../resources/${file}`)
-  resources.push(...data)
+  if (!file.includes('Places')) {
+    const { data } = require(`../resources/${file}`)
+    resources.push(...data)
+  }
 })
 
 module.exports = {
