@@ -50,10 +50,15 @@ namespace sample_api.Controllers
                     Message = "Invalid per page query parameter";
                 }
             }
-            Regex.Replace(type, @"\s+", "");
-            List<string> types = type.Split(",").ToList();
+            List<string> types = new List<string>();
+            if (!string.IsNullOrEmpty(type))
+            {
+                Regex.Replace(type, @"\s+", "");
+                types = type.Split(",").ToList();
+            }
 
-            List<Place> result = places.Where(place => (!string.IsNullOrEmpty(type) ? types.Contains(place.Type) : true) && (!string.IsNullOrEmpty(keyword) ? place.Name.ToLower().Contains(keyword.ToLower()) : true)).Skip(pageQuery * perPageQuery).Take(perPageQuery).ToList();
+
+            List<Place> result = places.Where(place => (types.Count > 0 ? types.Contains(place.Type) : true) && (!string.IsNullOrEmpty(keyword) ? place.Name.ToLower().Contains(keyword.ToLower()) : true)).Skip(pageQuery * perPageQuery).Take(perPageQuery).ToList();
             decimal count = (decimal)places.Count / (decimal)perPageQuery;
             int totalPages = (int)Math.Ceiling(count);
 
