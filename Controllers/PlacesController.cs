@@ -34,11 +34,15 @@ namespace sample_api.Controllers
             string Message = null;
             List<Place> places = LoadJson();
             int pageQuery = 0;
-            bool pageQuerySuccess = int.TryParse(page, out pageQuery);
-            if (!pageQuerySuccess)
+            if (!string.IsNullOrEmpty(page))
             {
-                Code = "Fail";
-                Message = "Invalid page query parameter";
+                bool pageQuerySuccess = int.TryParse(page, out pageQuery);
+                if (!pageQuerySuccess)
+                {
+                    Code = "Fail";
+                    Message = "Invalid page query parameter";
+                }
+
             }
             int perPageQuery = 10;
             if (!string.IsNullOrEmpty(perPage))
