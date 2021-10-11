@@ -29,7 +29,7 @@ namespace sample_api.Controllers
         [HttpGet]
         public Response<Place> Get([FromQuery]string page, [FromQuery]string perPage, [FromQuery]string type, [FromQuery]string keyword)
         {
-            // List<Place> places = GenerateList();
+            // GenerateList();
             string Code = "Success";
             string Message = null;
             List<Place> places = LoadJson();
@@ -60,7 +60,6 @@ namespace sample_api.Controllers
                 Regex.Replace(type, @"\s+", "");
                 types = type.Split(",").ToList();
             }
-
 
             List<Place> result = places.Where(place => (types.Count > 0 ? types.Contains(place.Type) : true) && (!string.IsNullOrEmpty(keyword) ? place.Name.ToLower().Contains(keyword.ToLower()) : true)).Skip(pageQuery * perPageQuery).Take(perPageQuery).ToList();
             decimal count = (decimal)places.Count / (decimal)perPageQuery;
@@ -93,14 +92,15 @@ namespace sample_api.Controllers
             }
         }
 
-        private List<Place> GenerateList(int items = 1000)
+        private void GenerateList(int items = 1000)
         {
             List<Place> places = new List<Place>();
             for (int i = 0; i < items; i++)
             {
                 places.Add(GeneratePlace());
             }
-            return places;
+            string json = JsonConvert.SerializeObject(places);
+            System.IO.File.WriteAllText(@"./data.json", json);
         }
 
         private Place GeneratePlace()
